@@ -20,13 +20,7 @@ export default class ContenedorProductos {
   listar(id) {
     const array = this.leerProductos();
     let producto = array.find((prod) => prod.id === parseInt(id));
-    return producto || { error: "Producto no encontrado" };
-  }
-
-  listarAll() {
-    return this.leerProductos().length
-      ? this.leerProductos()
-      : { error: "No hay productos cargados" };
+    return producto;
   }
 
   guardar(prodNuevo) {

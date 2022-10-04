@@ -22,7 +22,6 @@ export default class ContenedorCarritos {
 
   obtenerCarrito(id) {
     const array = this.leerCarritos();
-    console.log("array obtener carrito", array);
     let carrito = array.find((carr) => carr.id === parseInt(id));
     return carrito;
   }
@@ -46,7 +45,8 @@ export default class ContenedorCarritos {
     carro.productos.push(producto);
     const listaCarritos = this.leerCarritos();
     for (let i = 0; i < listaCarritos.length; i++) {
-      if (listaCarritos[i].id == idCarrito) listaCarritos[i].productos = carro.productos;
+      if (listaCarritos[i].id == idCarrito)
+        listaCarritos[i].productos = carro.productos;
     }
     this.actualizarCarritosEnArchivo(listaCarritos);
   }
@@ -71,5 +71,14 @@ export default class ContenedorCarritos {
     return id;
   }
 
-  
+  eliminarProductoDeCarrito(idCarrito, idProd) {
+    const array = this.leerCarritos();
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].id == idCarrito)
+        array[i].productos = array[i].productos.filter(
+          (prod) => prod.id != idProd
+        );
+    }
+    this.actualizarCarritosEnArchivo(array);
+  }
 }
