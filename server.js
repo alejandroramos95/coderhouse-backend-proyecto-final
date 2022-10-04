@@ -10,6 +10,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/productos", routerProductos);
 app.use("/api/carrito", routerCarrito);
 
+app.all('*', (req, res) => {
+	res.status(404).send({error: -2, descripcion: `Ruta '${req.originalUrl}' no implementada` });
+	});
+
 const PORT = 8080;
 
 const server = app.listen(PORT, () => {

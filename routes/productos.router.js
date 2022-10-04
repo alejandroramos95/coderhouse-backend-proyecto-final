@@ -15,7 +15,7 @@ function validarAdmin(req, res, next) {
 
 // Listar todos los productos cargados http://localhost:8080/api/productos
 router.get("/", (req, res) => {
-  const listaProductos = contenedorProductos.leerProductos()
+  const listaProductos = contenedorProductos.leerProductos().length
     ? contenedorProductos.leerProductos()
     : { error: "No hay productos cargados" };
   res.send(listaProductos);

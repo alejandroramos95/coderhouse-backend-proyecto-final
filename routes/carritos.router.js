@@ -49,7 +49,7 @@ router.post("/:id/productos/:idPrd", (req, res) => {
   res.send(response);
 });
 
-// Eliminar un producto del carrito por ID
+// Eliminar un producto del carrito por ID http://localhost:8080/api/carrito/1/productos/1
 router.delete("/:id/productos/:idPrd", (req, res) => {
   const response = contenedorCarritos.eliminarProductoDeCarrito(
     req.params.id,
