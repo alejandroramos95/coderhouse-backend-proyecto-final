@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import ContenedorProductosDaos from "./Producto.dao.js";
 import CarritoModel from "../models/CarritoModel.js";
-import ProductoModel from "../models/ProductoModel.js";
 
 export default class ContenedorCarritosDaos {
   constructor() {
@@ -44,9 +43,11 @@ export default class ContenedorCarritosDaos {
       await this.conectarDB();
       const prod = await this.producto.listar(idProd);
       //console.log(producto)
-      const carr = await this.obtenerCarrito(idCarrito);
+      // const carr = await this.obtenerCarrito(idCarrito);
       //console.log(carrito)
-      await CarritoModel.findByIdAndUpdate(carr, { $push: { productos: prod } });
+      await CarritoModel.findByIdAndUpdate(idCarrito, {
+        $push: { productos: prod },
+      });
       //console.log("producto temp", prod)
     } catch (e) {}
   }
@@ -62,12 +63,9 @@ export default class ContenedorCarritosDaos {
     try {
       await this.conectarDB();
       const prod = await this.producto.listar(idProd);
-      const carr = await this.obtenerCarrito(idCarrito);
-      console.log("prodd", prod)
-      console.log("carrr", carr)
-      await CarritoModel.findByIdandDelete()
-      
-
+      await CarritoModel.findByIdAndUpdate(idCarrito, {
+        $pull: { productos: prod },
+      });
     } catch (e) {}
   }
 }

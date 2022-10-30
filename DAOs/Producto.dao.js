@@ -36,7 +36,7 @@ export default class ContenedorProductosDaos {
       await this.conectarDB();
       return await ProductoModel.findById(id);
     } catch (e) {
-        console.log("Error listar: ", e);
+      console.log("Error listar: ", e);
     }
   }
 
@@ -45,7 +45,7 @@ export default class ContenedorProductosDaos {
       await this.conectarDB();
       await ProductoModel.findByIdAndUpdate(id, prod);
     } catch (e) {
-        console.log("Error actualizar: ", e);
+      console.log("Error actualizar: ", e);
     }
   }
 
@@ -54,7 +54,7 @@ export default class ContenedorProductosDaos {
       await this.conectarDB();
       await ProductoModel.findByIdAndDelete(id);
     } catch (e) {
-        console.log("Error borrar: ", e);
+      console.log("Error borrar: ", e);
     }
   }
 }
