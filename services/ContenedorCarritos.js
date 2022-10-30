@@ -6,61 +6,61 @@ const contenedorProductos = new ContenedorProductos();
 export default class ContenedorCarritos {
   constructor() {}
 
-  leerCarritos() {
+  async leerCarritos() {
     let file = [];
     try {
-      const tempFile = fs.readFileSync("carritos.txt", "utf-8");
+      const tempFile = await fs.promises.readFile("carritos.txt", "utf-8");
       if (tempFile) file = JSON.parse(tempFile);
     } catch (e) {}
     return file;
   }
 
-  actualizarCarritosEnArchivo(carrito) {
+  async actualizarCarritosEnArchivo(carrito) {
     const data = JSON.stringify(carrito);
-    fs.writeFileSync("carritos.txt", data, "utf-8");
+    await fs.promises.writeFile("carritos.txt", data, "utf-8");
   }
 
-  obtenerCarrito(id) {
-    const array = this.leerCarritos();
+  async obtenerCarrito(id) {
+    const array = await this.leerCarritos();
     let carrito = array.find((carr) => carr.id === parseInt(id));
     return carrito;
   }
 
-  crearCarrito() {
+  async crearCarrito() {
     let carritoNuevo = {};
 
-    carritoNuevo.id = this.generarNuevoId();
+    carritoNuevo.id = await this.generarNuevoId();
     carritoNuevo.timeStamp = Date.now();
     carritoNuevo.productos = [];
 
-    const array = this.leerCarritos();
+    const array = await this.leerCarritos();
     array.push(carritoNuevo);
-    this.actualizarCarritosEnArchivo(array);
+    await this.actualizarCarritosEnArchivo(array);
     return carritoNuevo.id;
   }
 
-  guardarProductoEnCarrito(idCarrito, idProd) {
-    const producto = contenedorProductos.listar(idProd);
-    const carro = this.obtenerCarrito(idCarrito);
+  async guardarProductoEnCarrito(idCarrito, idProd) {
+    const producto = await contenedorProductos.listar(idProd);
+    const carro = await this.obtenerCarrito(idCarrito);
     carro.productos.push(producto);
-    const listaCarritos = this.leerCarritos();
+    const listaCarritos = await this.leerCarritos();
     for (let i = 0; i < listaCarritos.length; i++) {
       if (listaCarritos[i].id == idCarrito)
         listaCarritos[i].productos = carro.productos;
     }
-    this.actualizarCarritosEnArchivo(listaCarritos);
+    await this.actualizarCarritosEnArchivo(listaCarritos);
   }
 
-  borrar(id) {
-    const array = this.leerCarritos();
+  async borrar(id) {
+    const array = await this.leerCarritos();
     let index = array.findIndex((prod) => prod.id === parseInt(id));
     array.splice(index, 1);
-    this.actualizarCarritosEnArchivo(array);
+    await this.actualizarCarritosEnArchivo(array);
   }
 
-  generarNuevoId() {
+  async generarNuevoId() {
     let id;
-    const array = this.leerCarritos();
+    const array = await this.leerCarritos();
     if (array.length) {
       const arrayAOrdenar = [...array];
       const indice = arrayAOrdenar.sort((a, b) => b.id - a.id)[0].id;
@@ -71,14 +71,14 @@ export default class ContenedorCarritos {
     return id;
   }
 
-  eliminarProductoDeCarrito(idCarrito, idProd) {
-    const array = this.leerCarritos();
+  async eliminarProductoDeCarrito(idCarrito, idProd) {
+    const array = await this.leerCarritos();
     for (let i = 0; i < array.length; i++) {
       if (array[i].id == idCarrito)
         array[i].productos = array[i].productos.filter(
           (prod) => prod.id != idProd
         );
     }
-    this.actualizarCarritosEnArchivo(array);
+    await this.actualizarCarritosEnArchivo(array);
   }
 }

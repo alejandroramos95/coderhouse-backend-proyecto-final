@@ -3,28 +3,31 @@ import fs from "fs";
 export default class ContenedorProductos {
   constructor() {}
 
-  leerProductos() {
+  async leerProductos() {
     let file = [];
     try {
-      const tempFile = fs.readFileSync("productos.txt", "utf-8");
+      const tempFile = await fs.promises.readFile("productos.txt", "utf-8");
+      
       if (tempFile) file = JSON.parse(tempFile);
-    } catch (e) {}
+    } catch (e) {
+
+    }
     return file;
   }
 
-  guardoProductoEnArchivo(producto) {
+  async guardoProductoEnArchivo(producto) {
     const data = JSON.stringify(producto);
-    fs.writeFileSync("productos.txt", data, "utf-8");
+    await fs.promises.writeFile("productos.txt", data, "utf-8");
   }
 
-  listar(id) {
-    const array = this.leerProductos();
+  async listar(id) {
+    const array = await this.leerProductos();
     let producto = array.find((prod) => prod.id === parseInt(id));
     return producto;
   }
 
-  guardar(prodNuevo) {
-    const array = this.leerProductos();
+  async guardar(prodNuevo) {
+    const array = await this.leerProductos();
     prodNuevo.timeStamp = Date.now();
     if (array.length) {
       const arrayAOrdenar = [...array];
@@ -34,25 +37,25 @@ export default class ContenedorProductos {
       prodNuevo.id = 1;
     }
     array.push(prodNuevo);
-    this.guardoProductoEnArchivo(array);
+    await this.guardoProductoEnArchivo(array);
     return prodNuevo;
   }
 
-  actualizar(prod, id) {
-    const array = this.leerProductos();
+  async actualizar(prod, id) {
+    const array = await this.leerProductos();
     prod.id = Number(id);
     let index = array.findIndex((prod) => prod.id === parseInt(id));
     console.log("index :", index);
     if (index >= 0) {
       array.splice(index, 1, prod);
-      this.guardoProductoEnArchivo(array);
+      await this.guardoProductoEnArchivo(array);
     }
   }
 
-  borrar(id) {
-    const array = this.leerProductos();
+  async borrar(id) {
+    const array = await this.leerProductos();
     let index = array.findIndex((prod) => prod.id === parseInt(id));
     array.splice(index, 1);
-    this.guardoProductoEnArchivo(array);
+    await this.guardoProductoEnArchivo(array);
   }
 }

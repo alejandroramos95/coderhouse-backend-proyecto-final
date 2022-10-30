@@ -1,9 +1,9 @@
 import express from "express";
-import ContenedorProductos from "../services/ContenedorProductos.js";
+import ContenedorProductosDaos from "../DAOs/Producto.dao.js";
 
 const router = express.Router();
 
-const contenedorProductos = new ContenedorProductos();
+const contenedorProductos = new ContenedorProductosDaos();
 
 function validarAdmin(req, res, next) {
   if (req.query.admin) {
@@ -13,23 +13,19 @@ function validarAdmin(req, res, next) {
   }
 }
 
-// Listar todos los productos cargados http://localhost:8080/api/productos
-router.get("/", (req, res) => {
-  const listaProductos = contenedorProductos.leerProductos().length
-    ? contenedorProductos.leerProductos()
-    : { error: "No hay productos cargados" };
+// Listar todos los productos cargados http://localhost:8080/api/productos DB OK
+router.get("/", async (req, res) => {
+  const listaProductos = await contenedorProductos.leerProductos()
   res.send(listaProductos);
 });
 
-// Listar producto por ID http://localhost:8080/api/productos/1
-router.get("/:id", (req, res) => {
-  const productoBuscado = contenedorProductos.listar(req.params.id)
-    ? contenedorProductos.listar(req.params.id)
-    : { error: "Producto no encontrado" };
+// Listar producto por ID http://localhost:8080/api/productos/id DB OK
+router.get("/:id", async (req, res) => {
+  const productoBuscado = await contenedorProductos.listar(req.params.id)
   res.send(productoBuscado);
 });
 
-// Cargar producto a la lista con permisos Admin http://localhost:8080/api/productos/?admin=true
+// Cargar producto a la lista con permisos Admin http://localhost:8080/api/productos/?admin=true DB OK
 /*
 Producto ejemplo para Postman
 {
@@ -42,22 +38,23 @@ Producto ejemplo para Postman
 }
 */
 
-router.post("/", validarAdmin, (req, res) => {
+router.post("/", validarAdmin, async (req, res) => {
   console.log(req.body);
-  const productoCreado = contenedorProductos.guardar(req.body);
-  res.send(productoCreado);
+  const response = await contenedorProductos.guardoProductoEnDB(req.body)
+  res.send(response)
 });
 
-// Eliminar producto de la lista por ID http://localhost:8080/api/productos/1?admin=true
-router.delete("/:id", validarAdmin, (req, res) => {
-  const productoBorrado = contenedorProductos.borrar(req.params.id);
+// Eliminar producto de la lista por ID http://localhost:8080/api/productos/id?admin=true DB
+router.delete("/:id", validarAdmin, async (req, res) => {
+  const productoBorrado = await contenedorProductos.borrar(req.params.id)
   res.send(productoBorrado);
 });
 
-// Actualizar producto de la lista por ID http://localhost:8080/api/productos/1?admin=true
-router.put("/:id", validarAdmin, (req, res) => {
-  contenedorProductos.actualizar(req.body, req.params.id);
-  res.status(200).json({});
+// Actualizar producto de la lista por ID http://localhost:8080/api/productos/id?admin=true DB OK
+router.put("/:id", validarAdmin, async (req, res) => {
+  await contenedorProductos.actualizar(req.body, req.params.id);
+  const response = `Id: ${req.params.id} actualizado`
+  res.status(200).json({response});
 });
 
 export default router;
